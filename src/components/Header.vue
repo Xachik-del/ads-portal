@@ -1,130 +1,274 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br />
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener"
-        >vue-cli documentation</a
-      >.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel"
-          target="_blank"
-          rel="noopener"
-          >babel</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router"
-          target="_blank"
-          rel="noopener"
-          >router</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-vuex"
-          target="_blank"
-          rel="noopener"
-          >vuex</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint"
-          target="_blank"
-          rel="noopener"
-          >eslint</a
-        >
-      </li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li>
-        <a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a>
-      </li>
-      <li>
-        <a href="https://forum.vuejs.org" target="_blank" rel="noopener"
-          >Forum</a
-        >
-      </li>
-      <li>
-        <a href="https://chat.vuejs.org" target="_blank" rel="noopener"
-          >Community Chat</a
-        >
-      </li>
-      <li>
-        <a href="https://twitter.com/vuejs" target="_blank" rel="noopener"
-          >Twitter</a
-        >
-      </li>
-      <li>
-        <a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a>
-      </li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li>
-        <a href="https://router.vuejs.org" target="_blank" rel="noopener"
-          >vue-router</a
-        >
-      </li>
-      <li>
-        <a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-devtools#vue-devtools"
-          target="_blank"
-          rel="noopener"
-          >vue-devtools</a
-        >
-      </li>
-      <li>
-        <a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener"
-          >vue-loader</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-          rel="noopener"
-          >awesome-vue</a
-        >
-      </li>
-    </ul>
-  </div>
+  <header>
+    <div v-if="isMainPage">
+      <div class="d-flex justify-content-between mb-5 p-5 position-relative">
+        <img class="header-icon" :src="require('@/assets/icons/dots-9.svg')" width="30" alt="Dots"
+             @click="showChooseBgModal">
+        <img class="header-icon" :src="require('@/assets/icons/weather-forecast.svg')" width="30" alt="Weather">
+
+        <div class="card" v-if="showModal">
+          <div class="card-title">
+            <span>Dostosuj tło</span>
+            <span @click="showModal = false">X</span>
+          </div>
+          <div class="bg-images">
+            <div v-for="layoutImage in layoutImages" :key="layoutImage.name"
+                 @click="changeLayoutBackground(layoutImage)">
+              <img class="image" :src="layoutImage.src" width="25" alt="">
+            </div>
+            <div class="empty-image" @click="changeLayoutBackground(null)">
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-center mb-5 logo-center">
+        <img :src="require('@/assets/img/logo.png')" alt="">
+        <span>DAZZLE</span>
+      </div>
+      <div class="d-flex justify-content-center mb-5">
+        <div class="search">
+          <img :src="require('@/assets/icons/search.svg')" width="25" alt="Dots">
+          <input type="text" name="search" class="search_input" placeholder="Wyszukaj w internecie...">
+        </div>
+      </div>
+      <div class="container weather">
+        <span>Warsaw <img :src="require('@/assets/icons/weather.svg')" width="45" alt=""> 25.7°C</span>
+      </div>
+    </div>
+
+    <div v-else class="wrapper">
+      <div class="header-wrapper mb-2">
+        <div class="d-flex align-items-center justify-content-between logo" @click="$router.push('/')">
+          <img :src="require('@/assets/img/logo.png')" width="40px" alt="">
+          <span class="text-uppercase" style="margin-left: 5px">DAZZLE </span>
+          <span class="text-uppercase text-light">WIADOMOŚCI</span>
+        </div>
+        <div class="search">
+          <img :src="require('@/assets/icons/search.svg')" width="25" alt="Dots">
+          <input type="text" name="search" class="search_input" placeholder="Wyszukaj w internecie...">
+        </div>
+        <div></div>
+      </div>
+      <div class="navigation mt-5">
+        <router-link to="/sport">Sport</router-link>
+        <router-link to="/news">Wydarzenia</router-link>
+        <router-link to="/weather">Pogoda</router-link>
+        <router-link to="/business">Show business</router-link>
+      </div>
+    </div>
+
+
+  </header>
 </template>
 
 <script>
+
 export default {
-  name: "HelloWorld",
-  props: {
-    msg: String,
+  name: "Header",
+  data() {
+    return {
+      showModal: false,
+      array: {
+        sport: [
+          { id: null, name: "Test", image: null, description: null, link: null, }
+        ],
+        ads: [
+          { name: "Test", image: null, description: null, link: null, }
+        ]
+      },
+      layoutImages: [
+        {name: "background_0", src: require('@/assets/img/layout/background_0.png'), default: true},
+        {name: "background_1", src: require('@/assets/img/layout/background_1.png'), default: false},
+        {name: "background_2", src: require('@/assets/img/layout/background_2.png'), default: false},
+        {name: "background_3", src: require('@/assets/img/layout/background_3.png'), default: false},
+        {name: "background_4", src: require('@/assets/img/layout/background_4.png'), default: false},
+      ]
+    }
   },
-};
+  computed: {
+    isMainPage() {
+      return this.$route.name === 'home'
+    }
+  },
+  created() {
+    this.changeLayoutBackground(this.layoutImages[0])
+  },
+  methods: {
+    showChooseBgModal() {
+      this.showModal = true;
+    },
+    changeLayoutBackground(image) {
+      const el = document.querySelector("body");
+      window.localStorage.setItem('backgroundImage', image ? `url(/layout/${image.name}.png)` : '')
+
+      el.style.backgroundImage =  window.localStorage.getItem('backgroundImage');
+
+      el.style.transitionProperty = 'background-image';
+      el.style.transitionDuration = "2s";
+    }
+  }
+}
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
+<style lang="scss" scoped>
+
+.card {
+  width: 200px;
+  height: 300px;
+  padding: 5px;
+  background-color: #1D1E1F;
+
+  position: absolute;
+  top: 100px;
+
+  .card-title {
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    font-size: 15px;
+
+    span:last-child {
+      cursor: pointer;
+    }
+  }
+
+  .bg-images {
+    height: 90%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 5px;
+
+    img {
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .empty-image {
+      cursor: pointer;
+      background-color: #2a2c2c;
+      border-radius: 10px;
+    }
+  }
+
+
+  background-position: center;
+  background-size: cover;
+
+
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+.wrapper {
+  padding: 2rem 20px 20px;
+  background-color: #1D1E1F;
+
+  .navigation a:hover {
+    transition-property: text-decoration;
+    text-decoration: underline;
+
+    transition-duration: 1s;
+  }
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+
+.header-wrapper {
+  .logo {
+    cursor: pointer;
+  }
+
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+
+  span {
+    font-size: 20px;
+    letter-spacing: 2px;
+  }
+
+  .search {
+    width: 75%;
+    padding: 0;
+    background: #4A4A4A;
+    color: #fff;
+  }
+
+  .search_input {
+    background: #4A4A4A;
+  }
+
+  .search_input:focus {
+    background: #4A4A4A;
+  }
 }
-a {
-  color: #42b983;
+
+
+.header-icon {
+  cursor: pointer;
+}
+
+.logo-center {
+  margin-top: 5%;
+  width: 100%;
+  gap: 10px;
+  color: #fff;
+  font-size: 3rem;
+  font-weight: 200;
+  letter-spacing: 0.4rem;
+  margin-bottom: 40px;
+}
+
+.search {
+  padding: 15px;
+  margin: 0 auto;
+  width: 50%;
+  align-items: center;
+  justify-content: space-around;
+  background: #1D1E1F;
+  border-radius: 3.2rem;
+  gap: 1rem;
+}
+
+.search {
+  display: flex;
+}
+
+.search_input {
+  width: 80%;
+  border: unset;
+  outline: unset;
+  background: #1D1E1F;
+  color: #fff;
+}
+
+.search_input:focus {
+  background: #1D1E1F;
+  color: #fff;
+}
+
+.weather {
+  display: flex;
+  height: 55%;
+  font-size: 1rem;
+  align-self: end;
+  color: #fff;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+
+  img {
+    width: 30px;
+  }
+}
+
+.navigation {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
 }
 </style>

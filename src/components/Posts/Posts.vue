@@ -24,7 +24,7 @@
   </div>
 </template>
 <script>
-import Post from "@/components/Home/Post.vue";
+import Post from "@/components/Posts/Post.vue";
 import json from "@/portal_full.json";
 
 export default {

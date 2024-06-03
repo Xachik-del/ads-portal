@@ -1,5 +1,5 @@
 <template>
-  <div class="link" @click="toPost" :class="isBigPost ? 'grid-lg-column' : ''">
+  <div class="link" @click="toPost">
     <div class="bg-image" :style="{ backgroundImage: `url(../../../img/${post.image})`}"></div>
 
     <div class="link__info">
@@ -44,33 +44,28 @@
 
 
 <script>
+import json from "@/portal_full.json";
 
 export default {
-  props: ["post", "idx", "big"],
-
+  name: "SmallPost",
+  props: ['post'],
   data() {
     return {
+      // post: null,
       like:  Math.floor((Math.random() * 300) + 1),
       isLiked: 0,
       isDisLiked: 0,
     }
   },
   computed: {
-    isBigPost() {
-      return this.big;
-    },
     getLike() {
       return this.like
     }
   },
+  mounted() {
+    console.log(this.post);
+  },
   methods: {
-    getStyles(index) {
-      if (index % 9 !== 0) {
-        return "";
-      }
-
-      return `flex: 0 0 50%`;
-    },
     toPost() {
       this.$router.push(`/${this.$route.name}/${this.post.id}`);
     },

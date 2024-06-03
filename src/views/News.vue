@@ -1,22 +1,36 @@
 <template>
   <div class="home">
     <p class="container text-uppercase text-light">{{ $route.name }}</p>
-    <Posts :posts="posts"/>
+    <Posts ref="posts" :posts="items" />
   </div>
 </template>
 
 <script>
-import Posts from "@/components/Home/Posts.vue";
+import Posts from "@/components/Posts/Posts.vue";
+import json from "@/portal_full.json";
 
 export default {
-  name: "HomeView",
+  name: "News",
   data() {
     return {
-      posts: Array.from({length: 40}, () => null)
+      items: [],
     };
   },
   components: {
     Posts,
+  },
+  mounted() {
+    this.getAds();
+  },
+  methods: {
+    getAds() {
+      this.items = json[this.$route.name];
+    },
+  },
+  watch: {
+    '$route'(to, from) {
+      this.getAds();
+    }
   },
 };
 </script>
@@ -33,6 +47,6 @@ export default {
 }
 
 .main__container {
-  background: transparent!important;
+  background: transparent !important;
 }
 </style>
